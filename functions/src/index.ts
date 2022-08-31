@@ -116,6 +116,9 @@ app.post(
       if (request.headers.authorization) {
         headers.authorization = request.headers.authorization
       }
+      if (request.headers['x-clipdrop-pro-client']) {
+        headers['x-clipdrop-pro-client'] = request.headers['x-clipdrop-pro-client']
+      }
       const result = await axios.post(CLEANUP_ENDPOINT, fd, {
         headers,
         responseType: 'arraybuffer',

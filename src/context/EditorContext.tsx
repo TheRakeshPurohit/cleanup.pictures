@@ -304,7 +304,8 @@ export function EditorProvider(props: any) {
         useHD,
         refiner,
         appCheckToken,
-        authToken
+        authToken,
+        user?.isPro()
       )
       if (!res) {
         throw new Error('empty response')
@@ -343,6 +344,7 @@ export function EditorProvider(props: any) {
     alert,
     useHD,
     refiner,
+    user,
   ])
 
   const addLine = useCallback(
