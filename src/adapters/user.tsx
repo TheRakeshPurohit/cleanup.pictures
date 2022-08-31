@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import {
   getAuth,
   GoogleAuthProvider,
@@ -58,15 +59,21 @@ export default function UserProvider(props: Props) {
         }
         // Retrieve the claims
         const decodedToken = await firebaseUser.getIdTokenResult(true)
+        const entitlement = decodedToken.claims.stripeRole?.toString()
         // The signed-in user info.
         setUser({
           firebaseUser,
           accessToken: token,
-          entitlement: decodedToken.claims.stripeRole?.toString(),
+          entitlement,
+        })
+        Sentry.setUser({
+          id: firebaseUser.uid,
+          entitlement,
         })
       } catch (error: any) {
         // eslint-disable-next-line no-alert
         alert(`Error ${error.code}: ${error.message}`)
+        Sentry.captureException(error)
       }
     }
 
@@ -111,6 +118,7 @@ export default function UserProvider(props: Props) {
         .catch((error: any) => {
           // eslint-disable-next-line no-alert
           alert(error.message)
+          Sentry.captureException(error)
         })
     }
   }, [firebase?.app])
@@ -124,6 +132,7 @@ export default function UserProvider(props: Props) {
       if (error.code !== 'auth/popup-closed-by-user') {
         // eslint-disable-next-line no-alert
         alert(`Error ${error.code}: ${error.message}`)
+        Sentry.captureException(error)
       }
     }
   }

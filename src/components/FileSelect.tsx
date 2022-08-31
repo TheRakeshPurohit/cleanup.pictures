@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { useState } from 'react'
 
 type FileSelectProps = {
@@ -28,6 +29,7 @@ export default function FileSelect(props: FileSelectProps) {
     } catch (e) {
       // eslint-disable-next-line
       alert(`error: ${(e as any).message}`)
+      Sentry.captureException(e)
     }
   }
 

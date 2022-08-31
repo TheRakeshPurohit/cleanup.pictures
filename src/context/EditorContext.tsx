@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import {
   createContext,
   useCallback,
@@ -326,6 +327,7 @@ export function EditorProvider(props: any) {
       firebase?.logEvent('inpaint_failed', {
         error,
       })
+      Sentry.captureException(error)
       // Add a new line. It prevents from adding a long straight line when
       // the user draws again.
       const currentEdit = edits[edits.length - 1]

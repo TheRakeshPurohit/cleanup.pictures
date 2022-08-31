@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { CheckIcon } from '@heroicons/react/outline'
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth'
 import { useState } from 'react'
@@ -75,6 +76,7 @@ function SigninLink() {
     } catch (error: any) {
       // eslint-disable-next-line no-alert
       alert(error.message)
+      Sentry.captureException(error)
       setIsLoading(false)
     }
   }

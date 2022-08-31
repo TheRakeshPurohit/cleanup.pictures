@@ -5,6 +5,8 @@
   "dependencies": {
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.4",
+    "@sentry/react": "^7.11.1",
+    "@sentry/tracing": "^7.11.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",

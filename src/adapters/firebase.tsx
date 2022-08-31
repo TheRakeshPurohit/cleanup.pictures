@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import {
   Analytics,
   getAnalytics,
@@ -86,6 +87,7 @@ export default function FirebaseProvider(props: Props) {
       } catch (e) {
         // Log failures AppCheck.
         logEvent('app_check_failed', { error: e })
+        Sentry.captureException(e)
       }
     }
 
