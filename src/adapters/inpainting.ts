@@ -15,7 +15,8 @@ export default async function inpaint(
   isHD: boolean,
   refiner: RefinerType,
   appCheckToken?: string,
-  authToken?: string
+  authToken?: string,
+  isPro?: boolean
 ) {
   const fd = new FormData()
   fd.append('image_file', imageFile)
@@ -35,6 +36,10 @@ export default async function inpaint(
   // Add the auth token.
   if (authToken) {
     headers.Authorization = `Bearer ${authToken}`
+  }
+  // Add the isPro header.
+  if (isPro !== undefined) {
+    headers['x-clipdrop-pro-client'] = isPro ? 'true' : 'false'
   }
   // Add the HD flag.
   headers['X-HD'] = isHD ? 'true' : 'false'
