@@ -43,3 +43,15 @@ The documentation is available here: https://clipdrop.co/apis/docs/cleanup
 ## Acknowledgements
 
 CleanUp.pictures wouldn't be possible without [LaMa: Resolution-robust Large Mask Inpainting with Fourier Convolutions](https://github.com/saic-mdal/lama) by Samsung Research.
+
+## Our tools
+
+Cleanup.pictures is made with love by [ClipDrop](http://clipdrop.co/). 
+Take a look at our other tools: 
+- [Remove background](https://clipdrop.co/remove-background)
+- [Image Upscaler](https://clipdrop.co/image-upscaler)
+- [Relight](https://clipdrop.co/relight)
+
+Or try one of our mobile apps:
+- [iOS](https://apps.apple.com/app/clipdrop-ar-copy-paste/id1512594879)
+- [Android](https://play.google.com/store/apps/details?id=app.arcopypaste)
