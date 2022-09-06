@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 
 export function dataURItoBlob(dataURI: string) {
@@ -49,14 +50,20 @@ export function shareImage(base64: string, name: string) {
   const shareData = {
     files: filesArray,
   }
-  // eslint-disable-nextline
   const nav: any = navigator
   const canShare = nav.canShare && nav.canShare(shareData)
   const userAgent = navigator.userAgent || navigator.vendor
   const isMobile = /android|iPad|iPhone|iPod/i.test(userAgent)
   if (canShare && isMobile) {
-    navigator.share(shareData)
-    return true
+    try {
+      navigator.share(shareData)
+      return true
+    } catch (err: any) {
+      if (err.name !== 'NotAllowedError') {
+        Sentry.captureException(err)
+      }
+      return false
+    }
   }
   return false
 }
