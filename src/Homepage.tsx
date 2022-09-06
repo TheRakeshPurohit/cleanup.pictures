@@ -1,8 +1,6 @@
-import { XIcon } from '@heroicons/react/outline'
-import { useState } from 'react'
 import { useWindowSize } from 'react-use'
 import { useUser } from './adapters/user'
-import Button from './components/Button'
+import Banner from './Banner'
 import FileSelect from './components/FileSelect'
 import Logo from './components/Logo'
 import LogoPro from './components/LogoPro'
@@ -27,29 +25,11 @@ export default function Homepage({
 }: HomepageProps) {
   const windowSize = useWindowSize()
   const user = useUser()
-  const [showBanner, setShowBanner] = useState(false)
+
   return (
     <>
       <div className="fixed w-full z-10">
-        {showBanner && (
-          <div className="hidden sm:block bg-primary text-black p-3 sm:p-7 text-center font-semibold text-lg relative">
-            Today we&apos;re launching ClipDrop Relight 💡
-            <a
-              className="underline pl-2"
-              href="https://www.producthunt.com/posts/clipdrop-relight"
-              target="_blank"
-              rel="noreferrer dofollow"
-            >
-              Try Cleanup Relight
-            </a>
-            <div className="absolute right-1 top-0 h-full flex items-center">
-              <Button
-                icon={<XIcon className="w-6 h-6" />}
-                onClick={() => setShowBanner(false)}
-              />
-            </div>
-          </div>
-        )}
+        <Banner />
         <header
           className={[
             'w-full bg-white bg-opacity-70',

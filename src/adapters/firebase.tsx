@@ -13,6 +13,7 @@ import {
   ReCaptchaV3Provider,
 } from 'firebase/app-check'
 import { getAuth, signInAnonymously } from 'firebase/auth'
+import { Firestore, getFirestore } from 'firebase/firestore'
 import {
   createContext,
   ReactNode,
@@ -38,6 +39,7 @@ interface Firebase {
   app: FirebaseApp
   appCheck: AppCheck
   analytics: Analytics
+  firestore: Firestore
   logEvent: (event: string, data?: any) => void
   getAppCheckToken: () => Promise<string | undefined>
   getAuthToken: () => Promise<string | undefined>
@@ -64,6 +66,7 @@ export default function FirebaseProvider(props: Props) {
   useEffect(() => {
     const app = initializeApp(firebaseConfig)
     const analytics = getAnalytics(app)
+    const firestore = getFirestore(app)
 
     const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY
     if (!recaptchaSiteKey) {
@@ -117,6 +120,7 @@ export default function FirebaseProvider(props: Props) {
     setState({
       app,
       appCheck,
+      firestore,
       analytics,
       logEvent,
       getAppCheckToken,
