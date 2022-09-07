@@ -47,7 +47,7 @@ export default function Banner() {
     return <></>
   }
   return (
-    <div className="hidden sm:block bg-primary text-black p-3 sm:p-7 text-center font-semibold text-lg relative">
+    <div className="bg-primary text-black p-3 sm:p-7 text-center font-semibold text-lg relative">
       {banner.text}
       <a
         className="underline pl-2"
