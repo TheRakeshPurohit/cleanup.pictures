@@ -36,6 +36,9 @@ export default function Banner() {
     )
     onSnapshot(q, snapshot => {
       const doc = snapshot.docs[0]
+      if (!doc) {
+        return
+      }
       if (doc.id && sessionStorage.getItem('closedBanner') !== doc.id) {
         const data = doc?.data()
         setBanner({ ...(data as BannerItem), id: doc.id })
