@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react'
+import { RESIZE_HD, RESIZE_LD } from './adapters/config'
 import { useFirebase } from './adapters/firebase'
 import { useUser } from './adapters/user'
+import DownscaleModal from './components/DownscaleModal'
 import SignInModal from './components/SigninModal'
 import UpgradeModal from './components/UpgradeModal'
 import { useEditor } from './context/EditorContext'
 import EditorHeader from './EditorHeader'
 import EditorUI from './EditorUI'
 import Homepage from './Homepage'
-import { resizeImageFile } from './utils'
-
-const urlParams = new URLSearchParams(window.location.search)
-
-const RESIZE_LD = 720
-const RESIZE_HD = parseInt(urlParams.get('hd_downscale') || '1440', 10)
+import { getImage, resizeImageFile } from './utils'
 
 function App() {
   const editor = useEditor()
@@ -34,6 +31,9 @@ function App() {
 
   const [showOriginal, setShowOriginal] = useState(false)
   const [showSeparator, setShowSeparator] = useState(false)
+
+  const [downscaleModalImage, setDownscaleModalImage] =
+    useState<HTMLImageElement>()
 
   const user = useUser()
 
@@ -60,22 +60,47 @@ function App() {
     editor.setOriginalFile(f)
   }
 
-  async function onFileChange(f: File, hd: boolean) {
+  async function onFileChange(f: File) {
     if (!firebase) {
       throw new Error('No firebase')
     }
+    const image = await getImage(f)
+
+    firebase.logEvent('set_file', {
+      originalWidth: image.width,
+      originalHeight: image.height,
+    })
+
+    // If user is not pro and image is larger than LD
+    if (
+      !user?.isPro() &&
+      (image.width > RESIZE_LD || image.height > RESIZE_LD)
+    ) {
+      setDownscaleModalImage(image)
+      return
+    }
+
+    const { file: resizedFile } = await resizeImageFile(f, RESIZE_HD)
+    editor.setFile(resizedFile)
+  }
+
+  async function onDownscaleAndContinue() {
+    if (!editor.originalFile) {
+      throw new Error('No original file')
+    }
+
     const {
       file: resizedFile,
-      resized,
-      originalWidth,
       originalHeight,
-    } = await resizeImageFile(f, hd ? RESIZE_HD : RESIZE_LD)
-    firebase.logEvent('set_file', {
-      resized,
+      originalWidth,
+    } = await resizeImageFile(editor.originalFile, RESIZE_LD)
+    editor.setFile(resizedFile)
+    setDownscaleModalImage(undefined)
+
+    firebase?.logEvent('downscale_and_continue', {
       originalWidth,
       originalHeight,
     })
-    editor.setFile(resizedFile)
   }
 
   function closeUpgradeFlow() {
@@ -83,6 +108,13 @@ function App() {
     window.history.pushState({}, document.title, '/')
     setUpgradeFlowScreen(null)
     setShowUpgrade(false)
+  }
+
+  function closeDownscale() {
+    firebase?.logEvent('close_downscale_modal')
+    setDownscaleModalImage(undefined)
+    editor.setFile(undefined)
+    editor.setOriginalFile(undefined)
   }
 
   return (
@@ -96,25 +128,6 @@ function App() {
         <>
           <EditorHeader
             useHD={editor.useHD}
-            setUseHD={(value: boolean) => {
-              firebase?.logEvent('upgrade_hd_toggle', { enabled: value })
-              if (user?.isPro()) {
-                if (editor.originalFile) {
-                  // eslint-disable-next-line no-alert
-                  const result = window.confirm(
-                    'Current changes will be reset. Continue?'
-                  )
-                  if (result) {
-                    onFileChange(editor.originalFile, value)
-                  } else {
-                    return
-                  }
-                }
-                editor.setUseHD(value)
-              } else {
-                setShowUpgrade(true)
-              }
-            }}
             refiner={editor.refiner}
             setRefiner={editor.setRefiner}
             onBack={() => {
@@ -137,16 +150,25 @@ function App() {
       ) : (
         <Homepage
           setOriginalFile={editor.setOriginalFile}
-          onFileChange={f => onFileChange(f, editor.useHD)}
+          onFileChange={f => onFileChange(f)}
           startWithDemoImage={startWithDemoImage}
           setShowUpgrade={setShowUpgrade}
           setShowSignin={setShowSignin}
         />
       )}
 
+      {downscaleModalImage && (
+        <DownscaleModal
+          onClose={closeDownscale}
+          onDownscale={onDownscaleAndContinue}
+          onUpgrade={() => setShowUpgrade(true)}
+          image={downscaleModalImage}
+        />
+      )}
+
       {showUpgrade && (
         <UpgradeModal
-          onClose={() => closeUpgradeFlow()}
+          onClose={closeUpgradeFlow}
           screen={upgradeFlowScreen}
           isProUser={user?.isPro()}
         />

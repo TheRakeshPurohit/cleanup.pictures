@@ -22,7 +22,7 @@ export default function FileSelect(props: FileSelectProps) {
     }
     try {
       // Check if file is larger than 20mb
-      if (file.size > 20 * 1024 * 1024) {
+      if (file.size > 50 * 1024 * 1024) {
         throw new Error('file too large')
       }
       onSelection(file)
@@ -126,6 +126,9 @@ export default function FileSelect(props: FileSelectProps) {
             if (file) {
               onFileSelected(file)
             }
+            // Reset the value in case the user picks that file again
+            const input = ev.currentTarget
+            input.value = ''
           }}
           accept="image/png, image/jpeg"
         />

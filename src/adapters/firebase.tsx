@@ -12,7 +12,7 @@ import {
   initializeAppCheck,
   ReCaptchaV3Provider,
 } from 'firebase/app-check'
-import { getAuth, signInAnonymously } from 'firebase/auth'
+import { getAuth } from 'firebase/auth'
 import { Firestore, getFirestore } from 'firebase/firestore'
 import {
   createContext,
@@ -111,10 +111,7 @@ export default function FirebaseProvider(props: Props) {
       if (auth.currentUser) {
         return auth.currentUser.getIdToken()
       }
-      // Otherwise if the user is not signed in, we signed them in anonymously
-      // and return that anonymous user id token.
-      const user = await signInAnonymously(auth)
-      return user.user.getIdToken()
+      throw new Error('could not get auth token')
     }
 
     setState({

@@ -4,6 +4,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   isSignInWithEmailLink,
+  signInAnonymously,
   signInWithEmailLink,
   signInWithPopup,
   User as FirebaseUser,
@@ -22,6 +23,7 @@ interface User {
   firebaseUser: FirebaseUser
   accessToken: string
   entitlement: string | undefined
+  anonymous: boolean
 }
 
 interface UserController {
@@ -50,8 +52,10 @@ export default function UserProvider(props: Props) {
     }
     const onAuthChangedCallback = async (firebaseUser: FirebaseUser | null) => {
       try {
-        if (!firebaseUser || firebaseUser.isAnonymous) {
-          setUser(null)
+        if (!firebaseUser) {
+          // setUser(null)
+          const auth = getAuth()
+          await signInAnonymously(auth)
           return
         }
         const token = await firebaseUser.getIdToken()
@@ -66,12 +70,17 @@ export default function UserProvider(props: Props) {
           firebaseUser,
           accessToken: token,
           entitlement,
+          anonymous: firebaseUser.isAnonymous,
         })
         Sentry.setUser({
           id: firebaseUser.uid,
           entitlement,
         })
         Amplitude.setUserId(firebaseUser.uid)
+        if (entitlement) {
+          const identify = new Amplitude.Identify()
+          identify.set('entitlement', entitlement)
+        }
       } catch (error: any) {
         // eslint-disable-next-line no-alert
         alert(`Error ${error.code}: ${error.message}`)

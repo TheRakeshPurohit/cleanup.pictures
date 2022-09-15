@@ -85,12 +85,14 @@ export default function UserMenu(props: UserMenuProps) {
               >
                 <div className="p-4 ">
                   {user?.isPro() ? <p>Cleanup Pro</p> : <p>Cleanup Free</p>}
-                  {user?.user && (
+                  {user?.user && !user.user.anonymous && (
                     <p
                       className="text-xs font-thin font-mono opacity-70 selection-text mt-3"
                       style={{ userSelect: 'text' }}
                     >
-                      User id: {user.user?.firebaseUser.uid}
+                      {user.user?.firebaseUser.email}
+                      <br />
+                      {user.user?.firebaseUser.uid}
                     </p>
                   )}
                 </div>
@@ -102,7 +104,7 @@ export default function UserMenu(props: UserMenuProps) {
                     onClick={onUpgrade}
                   />
                 )}
-                {!user?.user && (
+                {user?.user?.anonymous && (
                   <MenuItemButton
                     label="Sign in"
                     icon={<UserIcon className="w-6 h-6" />}
@@ -117,7 +119,7 @@ export default function UserMenu(props: UserMenuProps) {
                   }}
                 />
 
-                {user?.user && (
+                {user?.user && !user.user.anonymous && (
                   <>
                     {user.isPro() && (
                       <MenuItemButton

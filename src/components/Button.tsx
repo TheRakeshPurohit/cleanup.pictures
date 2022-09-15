@@ -66,6 +66,7 @@ export default function Button(props: ButtonProps) {
         children ? 'space-x-3 px-5' : 'px-3 sm:px-5',
         background,
         disabled ? 'pointer-events-none opacity-50' : '',
+        'justify-center items-center',
         className,
       ].join(' ')}
     >

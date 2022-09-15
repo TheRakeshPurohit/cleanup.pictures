@@ -15,7 +15,6 @@ const refiners = [
 interface EditorHeaderProps {
   onBack: () => void
   useHD: boolean
-  setUseHD: (useHD: boolean) => void
   refiner: RefinerType
   setRefiner: (refiner: RefinerType) => void
   showOriginal: boolean
@@ -27,7 +26,6 @@ interface EditorHeaderProps {
 export default function EditorHeader({
   onBack,
   useHD,
-  setUseHD,
   refiner,
   setRefiner,
   showOriginal,
@@ -58,9 +56,6 @@ export default function EditorHeader({
             enabled={showOriginal}
             setEnabled={setShowOriginal}
           />
-        </div>
-        <div className="mr-4 pr-4 flex items-center">
-          <Toggle label="HD" enabled={useHD} setEnabled={setUseHD} />
         </div>
         {useHD && showRefinerSelection && (
           <Listbox value={refiner} onChange={setRefiner}>

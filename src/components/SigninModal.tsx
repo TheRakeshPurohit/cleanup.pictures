@@ -15,7 +15,7 @@ export default function SignInModal(props: SignInModalProps) {
 
   // Close the signin popup when the user is signed in.
   useEffect(() => {
-    if (user?.user) {
+    if (user?.user && !user.user.anonymous) {
       onClose()
     }
   }, [user, onClose])
