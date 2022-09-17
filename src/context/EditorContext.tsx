@@ -264,7 +264,7 @@ export function EditorProvider(props: any) {
     return outputCtx?.canvas.toDataURL(file.type)
   }, [context, file, maskCanvas, originalImage, output, patch, getLastRender])
 
-  const download = useCallback(() => {
+  const download = useCallback(async () => {
     if (!file || !context) {
       // eslint-disable-next-line
       console.error('no file or context')
@@ -275,7 +275,7 @@ export function EditorProvider(props: any) {
       throw new Error('could not get canvas data')
     }
     const name = file.name.replace(/(\.[\w\d_-]+)$/i, '_cleanup$1')
-    if (shareImage(base64, name)) {
+    if (await shareImage(base64, name)) {
       firebase?.logEvent('download', { mode: 'share' })
     } else {
       downloadImage(base64, name)

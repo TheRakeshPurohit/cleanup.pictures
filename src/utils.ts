@@ -44,7 +44,7 @@ export function downloadImage(uri: string, name: string) {
   }, 100)
 }
 
-export function shareImage(base64: string, name: string) {
+export async function shareImage(base64: string, name: string) {
   const blob = dataURItoBlob(base64)
   const filesArray = [new File([blob], name, { type: 'image/jpeg' })]
   const shareData = {
@@ -56,9 +56,12 @@ export function shareImage(base64: string, name: string) {
   const isMobile = /android|iPad|iPhone|iPod/i.test(userAgent)
   if (canShare && isMobile) {
     try {
-      navigator.share(shareData)
+      await navigator.share(shareData)
       return true
     } catch (err: any) {
+      if (err.name === 'AbortError') {
+        return true
+      }
       if (err.name !== 'NotAllowedError') {
         Sentry.captureException(err)
       }
