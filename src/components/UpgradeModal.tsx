@@ -118,7 +118,7 @@ function CheckoutFlow() {
     )
   }
   // Step 2 - Show the price
-  if (user?.user) {
+  if (user?.user && !user.user.anonymous) {
     return <Prices products={products} onCheckout={startCheckout} />
   }
   // Step 1 - Login required
