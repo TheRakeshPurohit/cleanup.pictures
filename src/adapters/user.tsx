@@ -1,4 +1,3 @@
-import * as Amplitude from '@amplitude/analytics-browser'
 import * as Sentry from '@sentry/react'
 import {
   getAuth,
@@ -76,11 +75,6 @@ export default function UserProvider(props: Props) {
           id: firebaseUser.uid,
           entitlement,
         })
-        Amplitude.setUserId(firebaseUser.uid)
-        if (entitlement) {
-          const identify = new Amplitude.Identify()
-          identify.set('entitlement', entitlement)
-        }
       } catch (error: any) {
         // eslint-disable-next-line no-alert
         alert(`Error ${error.code}: ${error.message}`)
