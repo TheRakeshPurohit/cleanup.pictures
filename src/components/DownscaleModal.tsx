@@ -55,7 +55,7 @@ export default function DownscaleModal(props: DownscaleModalProps) {
               className="hidden sm:block bg-gray-200"
               onClick={onDownscale}
             >
-              Downscale & continue
+              Continue with SD
             </Button>
           </div>
           <div className="flex flex-col items-center justify-center text-center space-y-4">
@@ -70,7 +70,7 @@ export default function DownscaleModal(props: DownscaleModalProps) {
         </div>
         <div className="sm:hidden flex flex-col space-y-4 pb-4">
           <Button className="bg-gray-200 h-16" onClick={onDownscale}>
-            Downscale & continue
+            Continue with SD
           </Button>
           <Button primary className="h-16" onClick={onUpgrade}>
             Try Pro 3 days free
