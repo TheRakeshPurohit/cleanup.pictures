@@ -16,6 +16,7 @@ export interface Price {
   currency: string
   amount: number
   trial: number // Number of days for trial period
+  active: boolean
 }
 
 export interface Product {
@@ -45,7 +46,9 @@ export default function useSubscriptions() {
             role: data.role,
             prices: [],
           }
-          const priceSnap = await getDocs(collection(doc.ref, 'prices'))
+          const priceSnap = await getDocs(
+            query(collection(doc.ref, 'prices'), where('active', '==', true))
+          )
           priceSnap.docs.forEach(priceDoc => {
             const priceData = priceDoc.data()
             const price: Price = {
@@ -54,6 +57,7 @@ export default function useSubscriptions() {
               currency: priceData.currency,
               amount: priceData.unit_amount / 100,
               trial: priceData.trial_period_days,
+              active: priceData.active,
             }
             product.prices.push(price)
           })

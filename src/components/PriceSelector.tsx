@@ -35,9 +35,7 @@ export default function PriceSelector(props: PriceSelectorProps) {
                   ].join(' ')}
                 />
                 {price.interval === 'year' && (
-                  <span className="text-2xl line-through opacity-20">
-                    ${price.amount / 0.4}
-                  </span>
+                  <span className="text-2xl line-through opacity-20">$60</span>
                 )}
                 <span className="text-2xl">${Math.round(price.amount)}</span>
 

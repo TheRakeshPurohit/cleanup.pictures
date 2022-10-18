@@ -145,7 +145,11 @@ function Prices(props: PricesProps) {
       return
     }
     if (!selectedPriceId) {
-      setSelectedPriceId(pro.prices[0].id)
+      const yearlyPrice = pro.prices.find(prc => prc.interval === 'year')
+      if (!yearlyPrice) {
+        return
+      }
+      setSelectedPriceId(yearlyPrice.id)
     }
   }, [products, selectedPriceId])
 
