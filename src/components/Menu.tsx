@@ -121,14 +121,13 @@ export default function UserMenu(props: UserMenuProps) {
 
                 {user?.user && !user.user.anonymous && (
                   <>
-                    {user.isPro() && (
+                    {user.hasPortal() && (
                       <MenuItemButton
                         label="Manage subscription"
                         icon={<ExternalLinkIcon className="w-6 h-6" />}
                         onClick={async () => {
                           setIsLoading(true)
                           await user?.openPortal()
-                          // setIsLoading(false)
                         }}
                       />
                     )}

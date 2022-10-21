@@ -8,12 +8,14 @@ import {
   signInWithPopup,
   User as FirebaseUser,
 } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 import { useFirebase } from './firebase'
@@ -30,6 +32,7 @@ interface UserController {
   signInWithGoogle: () => Promise<void>
   signOut: () => void
   isPro: () => boolean
+  hasPortal: () => boolean
   openPortal: () => Promise<void>
 }
 
@@ -43,6 +46,7 @@ export default function UserProvider(props: Props) {
   const { children } = props
   const [user, setUser] = useState<User | null>()
   const firebase = useFirebase()
+  const [portalLink, setPortalLink] = useState<string>()
 
   // Detect when the user's authentication status changes
   useEffect(() => {
@@ -85,6 +89,21 @@ export default function UserProvider(props: Props) {
     const unsub = getAuth().onAuthStateChanged(onAuthChangedCallback)
     return unsub
   }, [firebase?.app])
+
+  // Check if the user has a portal link
+  const uid = useMemo(() => user?.firebaseUser.uid, [user])
+  const db = useMemo(() => firebase?.firestore, [firebase])
+  useEffect(() => {
+    if (!db || !uid) {
+      return
+    }
+    getDoc(doc(db, `customers/${uid}`)).then(d => {
+      if (d.exists()) {
+        const data = d.data()
+        setPortalLink(data?.stripeLink)
+      }
+    })
+  }, [uid, db])
 
   // Check if the URL is a sign-in link
   useEffect(() => {
@@ -171,6 +190,7 @@ export default function UserProvider(props: Props) {
         signInWithGoogle,
         signOut: () => getAuth().signOut(),
         openPortal,
+        hasPortal: () => portalLink !== undefined,
         isPro: () => user?.entitlement === 'pro',
       }}
     >
