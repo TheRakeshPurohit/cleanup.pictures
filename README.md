@@ -28,7 +28,7 @@ REACT_APP_INPAINTING_ENDPOINT=http://localhost:5001/cleanup-pictures/us-central1
 If you don't have access to GPUs and/or don't want to deploy the service on remote GPUs,
 we provide an API that can be used to run fast high resolution inpainting.
 
-The documentation is available here: https://clipdrop.co/apis/docs/cleanup
+The documentation is available here: https://clipdrop.co/apis/docs/inpainting
 
 ## Development
 
